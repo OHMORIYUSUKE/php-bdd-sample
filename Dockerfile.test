@@ -1,0 +1,23 @@
+FROM php:8.3-cli
+
+WORKDIR /app
+
+# Composerのインストール
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# 必要なPHP拡張のインストール
+RUN apt-get update && apt-get install -y \
+    libzip-dev \
+    zip \
+    unzip \
+    && docker-php-ext-install zip
+
+# 依存関係のインストール
+COPY composer.json composer.lock ./
+RUN composer install --no-interaction --no-scripts
+
+# テストファイルのコピー
+COPY . .
+
+# Behatの実行
+CMD ["./vendor/bin/behat"] 

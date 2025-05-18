@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:80"
+    volumes:
+      - ./public:/var/www/html
+    networks:
+      - app-network
+
+  chrome:
+    image: seleniarm/standalone-chromium:latest
+    shm_size: 2gb
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    environment:
+      - SE_VNC_NO_PASSWORD=1
+      - SE_START_XVFB=true
+    networks:
+      - app-network
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    volumes:
+      - .:/app
+    environment:
+      - SELENIUM_HOST=chrome
+      - SELENIUM_PORT=4444
+    depends_on:
+      - app
+      - chrome
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge 
