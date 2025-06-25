@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['query'])) {
             <?php endforeach; ?>
         </div>
     <?php elseif ($_SERVER['REQUEST_METHOD'] === 'POST'): ?>
-        <p>検索結果が見つかりませんでした。</p>
+        <p class="no-results-message">検索結果が見つかりませんでした。</p>
     <?php endif; ?>
 </body>
 </html> 

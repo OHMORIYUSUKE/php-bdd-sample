@@ -50,10 +50,43 @@ class FeatureContext extends MinkContext implements Context
     public function assertSearchResultsContain(string $keyword): void
     {
         try {
-            $content = $this->driver->findElement(WebDriverBy::tagName('body'))->getText();
+            // 検索結果エリアから検索
+            $searchResultsDiv = $this->driver->findElement(WebDriverBy::className('search-results'));
+            $content = $searchResultsDiv->getText();
             Assert::assertStringContainsString($keyword, $content);
         } catch (\Exception $e) {
             throw $e;
+        }
+    }
+
+    /**
+     * @Then 学習者が求める情報が表示されること
+     */
+    public function assertLearnerInformationIsDisplayed(): void
+    {
+        try {
+            // 検索結果エリアが存在することを確認
+            $searchResultsDiv = $this->driver->findElement(WebDriverBy::className('search-results'));
+            Assert::assertNotNull($searchResultsDiv, '検索結果エリアが表示されていません');
+            
+            // 結果アイテムが存在することを確認
+            $resultItems = $this->driver->findElements(WebDriverBy::className('result-item'));
+            Assert::assertGreaterThan(0, count($resultItems), '検索結果が表示されていません');
+        } catch (\Exception $e) {
+            throw new \Exception('学習者に有用な情報が表示されていません: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * @Then 適切なメッセージが表示されること
+     */
+    public function assertAppropriateMessageIsDisplayed(): void
+    {
+        try {
+            $errorMessageElement = $this->driver->findElement(WebDriverBy::className('no-results-message'));
+            Assert::assertNotNull($errorMessageElement, '適切なエラーメッセージが表示されていません');
+        } catch (\Exception $e) {
+            throw new \Exception('適切なメッセージの確認でエラーが発生しました: ' . $e->getMessage());
         }
     }
 
