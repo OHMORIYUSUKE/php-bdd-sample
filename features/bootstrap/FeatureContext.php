@@ -78,7 +78,7 @@ class FeatureContext extends MinkContext implements Context
     }
 
     /**
-     * @Then 適切なメッセージが表示されること
+     * @Then 存在しない時の適切なメッセージが表示されること 
      */
     public function assertAppropriateMessageIsDisplayed(): void
     {
